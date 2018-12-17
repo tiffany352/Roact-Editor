@@ -1,17 +1,21 @@
 {
-	"name": "roact-editor",
-	"partitions": {
-		"src": {
-			"path": "src",
-			"target": "ReplicatedStorage.Modules.RoactEditor"
-		},
-		"modules/testez": {
-			"path": "modules/testez/lib",
-			"target": "ReplicatedStorage.Modules.TestEZ"
-		},
-		"run-tests": {
-			"path": "scripts/run-tests.server.lua",
-			"target": "ServerScriptService.RunTests-RoactEditor"
-		}
-	}
+  "name": "roact-editor",
+  "partitions": {
+    "src": {
+      "path": "src",
+      "target": "ReplicatedStorage.Modules.Plugin"
+    },
+    "modules/testez": {
+      "path": "modules/testez/lib",
+      "target": "ReplicatedStorage.Modules.TestEZ"
+    },
+    "modules/roact": {
+      "path": "modules/roact/lib",
+      "target": "ReplicatedStorage.Modules.Roact"
+    },
+    "run-tests": {
+      "path": "scripts/run-tests.server.lua",
+      "target": "ServerScriptService.RunTests-RoactEditor"
+    }
+  }
 }
