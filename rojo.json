@@ -13,6 +13,14 @@
       "path": "modules/roact/lib",
       "target": "ReplicatedStorage.Modules.Roact"
     },
+    "modules/rodux": {
+      "path": "modules/rodux/lib",
+      "target": "ReplicatedStorage.Modules.Rodux"
+    },
+    "modules/roact-rodux": {
+      "path": "modules/roact-rodux/lib",
+      "target": "ReplicatedStorage.Modules.RoactRodux"
+    },
     "run-tests": {
       "path": "scripts/run-tests.server.lua",
       "target": "ServerScriptService.RunTests-RoactEditor"
