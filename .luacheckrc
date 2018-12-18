@@ -18,6 +18,13 @@ stds.roblox = {
 		"CFrame",
 		"Enum",
 		"Instance",
+
+		math = {
+			fields = {
+				"clamp",
+				"sign"
+			}
+		}
 	}
 }
 
