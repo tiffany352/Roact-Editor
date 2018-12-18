@@ -4,6 +4,7 @@ local Rodux = require(Modules.Rodux)
 local RoactRodux = require(Modules.RoactRodux)
 
 local App = require(script.Components.App)
+local PluginProvider = require(script.Components.PluginProvider)
 local reducer = require(script.reducer)
 
 return function(plugin, savedState)
@@ -12,8 +13,10 @@ return function(plugin, savedState)
 	local element = Roact.createElement(RoactRodux.StoreProvider, {
 		store = store,
 	}, {
-		App = Roact.createElement(App, {
+		PluginProvider = Roact.createElement(PluginProvider, {
 			plugin = plugin,
+		}, {
+			App = Roact.createElement(App)
 		})
 	})
 

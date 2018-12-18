@@ -4,4 +4,5 @@ local Rodux = require(Modules.Rodux)
 return Rodux.combineReducers({
 	stylebook = require(script.stylebook),
 	editorEnabled = require(script.editorEnabled),
+	selection = require(script.selection),
 })

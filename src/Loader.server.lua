@@ -98,6 +98,10 @@ function PluginFacade:createDockWidgetPluginGui(name, ...)
 	return gui
 end
 
+function PluginFacade:createPluginMenu(id, title, icon)
+	return plugin:CreatePluginMenu(id, title, icon)
+end
+
 --[[
 	Sets the method to call the next time the system tries to reload
 ]]

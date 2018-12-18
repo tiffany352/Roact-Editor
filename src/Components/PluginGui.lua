@@ -1,7 +1,9 @@
 local Source = script.Parent.Parent.Parent
 local Roact = require(Source.Roact)
 
-local PluginGui = Roact.PureComponent:extend("PluginGui")
+local PluginAccessor = require(script.Parent.PluginAccessor)
+
+local PluginGuiView = Roact.PureComponent:extend("PluginGuiView")
 
 --[[
 	props: {
@@ -16,7 +18,7 @@ local PluginGui = Roact.PureComponent:extend("PluginGui")
 	}
 ]]
 
-function PluginGui:init()
+function PluginGuiView:init()
 	local props = self.props
 
 	coroutine.wrap(function()
@@ -44,7 +46,7 @@ function PluginGui:init()
 	end)()
 end
 
-function PluginGui:render()
+function PluginGuiView:render()
 	if self.pluginGui then
 		self.pluginGui.Name = self.props.Name
 		self.pluginGui.Title = self.props.Title
@@ -57,6 +59,21 @@ function PluginGui:render()
 	else
 		return nil
 	end
+end
+
+local function PluginGui(props)
+	return PluginAccessor.withPlugin(function(plugin)
+		return Roact.createElement(PluginGuiView, {
+			plugin = plugin,
+			Name = props.Name,
+			Title = props.Title,
+			InitialDockState = props.InitialDockState,
+			InitialEnabled = props.InitialEnabled,
+			OverrideRestore = props.OverrideRestore,
+			FloatingSize = props.FloatingSize,
+			MinSize = props.MinSize,
+		}, props[Roact.Children])
+	end)
 end
 
 return PluginGui

@@ -4,22 +4,13 @@ local createFragment = require(Modules.Roact.createFragment)
 
 local Document = require(script.Parent.Document)
 local Toolbar = require(script.Parent.Toolbar)
+local Explorer = require(script.Parent.Explorer)
 
 local function App(props)
-	local plugin = props.plugin
-	local state = props.state
-	local updateState = props.updateState
-
 	return createFragment({
-		Document = Roact.createElement(Document, {
-			state = state,
-			updateState = updateState,
-		}),
-		Toolbar = Roact.createElement(Toolbar, {
-			plugin = plugin,
-			state = state,
-			updateState = updateState,
-		})
+		Document = Roact.createElement(Document),
+		Toolbar = Roact.createElement(Toolbar),
+		Explorer = Roact.createElement(Explorer),
 	})
 end
 

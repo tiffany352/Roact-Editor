@@ -37,10 +37,10 @@ local function Toolbar(props)
 	for _,component in pairs(props.components or {}) do
 		children[component.name] = Roact.createElement(Button, {
 			LayoutOrder = index,
-			size = UDim2.new(1, 0, 0, 48),
+			size = UDim2.new(1, 0, 0, 22),
 			text = component.name,
 			onClick = function()
-				props.setTree(component.component)
+				props.setTree(component.name, component.component)
 			end,
 		})
 		index = index + 1
@@ -73,8 +73,8 @@ end
 
 local function mapDispatchToProps(dispatch)
 	return {
-		setTree = function(component)
-			dispatch(setTree(component))
+		setTree = function(name, component)
+			dispatch(setTree(name, component))
 		end
 	}
 end
