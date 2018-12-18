@@ -87,7 +87,9 @@ end
 ]]
 function PluginFacade:createDockWidgetPluginGui(name, ...)
 	if self._pluginGuis[name] then
-		return self._pluginGuis[name]
+		local gui = self._pluginGuis[name]
+		gui:ClearAllChildren()
+		return gui
 	end
 
 	local gui = plugin:CreateDockWidgetPluginGui(name, ...)
