@@ -5,9 +5,17 @@ return Rodux.createReducer({}, {
 	loadStylebook = function(state, action)
 		return {
 			roact = action.roact,
-			modules = action.modules,
+			components = action.components,
 			parent = action.parent,
 			tree = {},
 		}
-	end
+	end,
+	setTree = function(state, action)
+		return {
+			roact = state.roact,
+			components = state.components,
+			parent = state.parent,
+			tree = action.tree,
+		}
+	end,
 })

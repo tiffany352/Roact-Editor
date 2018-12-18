@@ -26,11 +26,21 @@ local function checkForStylebook(selection)
 		return false, "Select a folder or modulescript"
 	end
 
-	local modules = {}
+	local components = {}
 	local roact = nil
 	for _,child in pairs(selection:GetChildren()) do
 		if child:IsA("ModuleScript") then
-			modules[#modules+1] = child
+			local ok, result = pcall(require, child)
+
+			local isFunc = type(result) == 'function'
+			local isComponent = type(result) == 'table' and result.render ~= nil
+
+			if ok and (isFunc or isComponent) then
+				components[#components+1] = {
+					name = type(result) == 'table' and tostring(result) or child.Name,
+					component = result,
+				}
+			end
 
 			if not roact then
 				local source = child.Source
@@ -56,7 +66,7 @@ local function checkForStylebook(selection)
 		end
 	end
 
-	if #modules == 0 then
+	if #components == 0 then
 		return false, "No components found in selection"
 	end
 
@@ -65,8 +75,8 @@ local function checkForStylebook(selection)
 	end
 
 	return true, {
-		roact = roact,
-		modules = modules,
+		roact = require(roact),
+		components = components,
 		parent = selection,
 	}
 end

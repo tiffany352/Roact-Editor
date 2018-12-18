@@ -13,7 +13,9 @@ local function Button(props)
 		BorderSizePixel = 0,
 
 		[Roact.Event.Activated] = function()
-			onClick()
+			if not props.disabled then
+				onClick()
+			end
 		end,
 	}, {
 		Label = Roact.createElement("TextLabel", {

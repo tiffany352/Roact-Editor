@@ -26,7 +26,7 @@ end
 
 function LoadStylebookButton:render()
 	local text = "Load Stylebook:\n"
-	local disabled = true
+	local disabled = false
 	local result
 
 	if self.props.stylebook then
@@ -37,9 +37,9 @@ function LoadStylebookButton:render()
 
 		if not hasStylebook then
 			text = text .. result
+			disabled = true
 		else
-			text = text .. string.format("%d components", #result.modules)
-			disabled = false
+			text = text .. string.format("%d components", #result.components)
 		end
 	end
 
@@ -49,7 +49,11 @@ function LoadStylebookButton:render()
 		text = text,
 		disabled = disabled,
 		onClick = function()
-			self.props.loadStylebook(result.roact, result.modules, result.parent)
+			if result then
+				self.props.loadStylebook(result.roact, result.components, result.parent)
+			else
+				self.props.loadStylebook()
+			end
 		end,
 	})
 end
@@ -62,8 +66,8 @@ end
 
 local function mapDispatchToProps(dispatch)
 	return {
-		loadStylebook = function(roact, modules, parent)
-			dispatch(loadStylebook(roact, modules, parent))
+		loadStylebook = function(roact, components, parent)
+			dispatch(loadStylebook(roact, components, parent))
 		end,
 	}
 end

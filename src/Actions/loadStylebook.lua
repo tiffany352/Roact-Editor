@@ -1,8 +1,8 @@
-local function loadStylebook(roact, modules, parent)
+local function loadStylebook(roact, components, parent)
 	return {
 		type = "loadStylebook",
 		roact = roact,
-		modules = modules,
+		components = components,
 		parent = parent,
 	}
 end

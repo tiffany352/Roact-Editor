@@ -2,6 +2,9 @@ local CoreGui = game:GetService("CoreGui")
 
 local Modules = script.Parent.Parent.Parent
 local Roact = require(Modules.Roact)
+local RoactRodux = require(Modules.RoactRodux)
+
+local DocumentNode = require(script.DocumentNode)
 
 local function Document(props)
 	return Roact.createElement(Roact.Portal, {
@@ -25,9 +28,23 @@ local function Document(props)
 				Image = "http://www.roblox.com/asset/?id=2658309676",
 				ScaleType = Enum.ScaleType.Tile,
 				TileSize = UDim2.new(0, 48, 0, 48),
+			}, {
+				RootNode = Roact.createElement(DocumentNode, {
+					tree = props.tree,
+					innerRoact = props.roact,
+				})
 			})
 		})
 	})
 end
+
+local function mapStateToProps(state)
+	return {
+		tree = state.stylebook.tree or {},
+		roact = state.stylebook.roact,
+	}
+end
+
+Document = RoactRodux.connect(mapStateToProps)(Document)
 
 return Document
