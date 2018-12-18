@@ -108,7 +108,7 @@ function PluginFacade:_load(savedState)
 
 	if not ok then
 		warn("Plugin failed to load: " .. result)
-		return
+		return false
 	end
 
 	local Plugin = result
@@ -117,8 +117,10 @@ function PluginFacade:_load(savedState)
 
 	if not ok then
 		warn("Plugin failed to run: " .. result)
-		return
+		return false
 	end
+
+	return true
 end
 
 function PluginFacade:unload()
@@ -143,7 +145,10 @@ function PluginFacade:_triggerReload()
 
 		spawn(function()
 			self.needsReload = false
-			self:_reload()
+			local ok = self:_reload()
+			if ok then
+				print("Reload successful!")
+			end
 		end)
 	end
 end
@@ -159,8 +164,6 @@ function PluginFacade:_watch(instance)
 	end
 
 	local connection1 = instance.Changed:Connect(function(prop)
-		print("Reloading due to", instance:GetFullName())
-
 		self:_triggerReload()
 	end)
 
