@@ -21,6 +21,10 @@
       "path": "modules/roact-rodux/lib",
       "target": "ReplicatedStorage.Modules.RoactRodux"
     },
+    "modules/cryo": {
+      "path": "modules/cryo/src",
+      "target": "ReplicatedStorage.Modules.Cryo"
+    },
     "run-tests": {
       "path": "scripts/run-tests.server.lua",
       "target": "ServerScriptService.RunTests-RoactEditor"

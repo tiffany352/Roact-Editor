@@ -1,26 +1,20 @@
 local Modules = script.Parent.Parent.Parent
 local Rodux = require(Modules.Rodux)
+local Cryo = require(Modules.Cryo)
 
 return Rodux.createReducer({}, {
+	loadStylebook = function(state, action)
+		-- clear
+		return {}
+	end,
 	setSelection = function(state, action)
 		return action.selection
 	end,
 	selectNode = function(state, action)
-		local newSelection = {}
-		local alreadyContains = false
-
-		for i = 1, #state do
-			if state[i] == action.node then
-				alreadyContains = true
-			else
-				newSelection[#newSelection + 1] = state[i]
-			end
+		if Cryo.List.find(state, action.node) then
+			return Cryo.List.removeValue(state, action.node)
+		else
+			return Cryo.List.join(state, { action.node })
 		end
-
-		if not alreadyContains then
-			newSelection[#newSelection + 1] = action.node
-		end
-
-		return newSelection
 	end,
 })

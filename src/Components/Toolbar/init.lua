@@ -1,7 +1,7 @@
 local Modules = script.Parent.Parent.Parent
 local Roact = require(Modules.Roact)
 local RoactRodux = require(Modules.RoactRodux)
-local setTree = require(Modules.Plugin.Actions.setTree)
+local addNode = require(Modules.Plugin.Actions.addNode)
 
 local PluginGui = require(script.Parent.PluginGui)
 local Button = require(script.Parent.Button)
@@ -40,7 +40,7 @@ local function Toolbar(props)
 			size = UDim2.new(1, 0, 0, 22),
 			text = component.name,
 			onClick = function()
-				props.setTree(component.name, component.component)
+				props.addNode(component.name, {}, props.parentSelected)
 			end,
 		})
 		index = index + 1
@@ -65,16 +65,22 @@ local function Toolbar(props)
 end
 
 local function mapStateToProps(state)
+	local parentSelected = 1
+	if #state.selection == 1 then
+		parentSelected = state.selection[1]
+	end
+
 	return {
 		stylebook = state.stylebook.parent and state.stylebook.parent.Name,
 		components = state.stylebook.components,
+		parentSelected = parentSelected,
 	}
 end
 
 local function mapDispatchToProps(dispatch)
 	return {
-		setTree = function(name, component)
-			dispatch(setTree(name, component))
+		addNode = function(type, props, parent)
+			dispatch(addNode(type, props, parent))
 		end
 	}
 end

@@ -14,3 +14,6 @@
 [submodule "modules/roact-rodux"]
 	path = modules/roact-rodux
 	url = https://github.com/Roblox/roact-rodux.git
+[submodule "modules/cryo"]
+	path = modules/cryo
+	url = https://github.com/Roblox/cryo.git

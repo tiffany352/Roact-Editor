@@ -7,7 +7,6 @@ return Rodux.createReducer({}, {
 			roact = action.roact,
 			components = action.components,
 			parent = action.parent,
-			tree = {},
 		}
 	end,
 	setTree = function(state, action)
@@ -15,7 +14,6 @@ return Rodux.createReducer({}, {
 			roact = state.roact,
 			components = state.components,
 			parent = state.parent,
-			tree = action.tree,
 		}
 	end,
 })

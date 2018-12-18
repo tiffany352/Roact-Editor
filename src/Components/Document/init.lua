@@ -2,9 +2,8 @@ local CoreGui = game:GetService("CoreGui")
 
 local Modules = script.Parent.Parent.Parent
 local Roact = require(Modules.Roact)
-local RoactRodux = require(Modules.RoactRodux)
 
-local DocumentNode = require(script.DocumentNode)
+local DocumentTree = require(script.DocumentTree)
 
 local Document = Roact.Component:extend("Document")
 
@@ -29,8 +28,6 @@ function Document:mousePanBy(rbx, x, y)
 end
 
 function Document:render()
-	local props = self.props
-
 	return Roact.createElement(Roact.Portal, {
 		target = CoreGui,
 	}, {
@@ -92,22 +89,10 @@ function Document:render()
 				UIScale = Roact.createElement("UIScale", {
 					Scale = self.state.zoomLevel,
 				}),
-				RootNode = Roact.createElement(DocumentNode, {
-					tree = props.tree,
-					innerRoact = props.roact,
-				})
+				DocumentTree = Roact.createElement(DocumentTree)
 			})
 		})
 	})
 end
-
-local function mapStateToProps(state)
-	return {
-		tree = state.stylebook.tree or {},
-		roact = state.stylebook.roact,
-	}
-end
-
-Document = RoactRodux.connect(mapStateToProps)(Document)
 
 return Document
