@@ -49,7 +49,9 @@ local function Explorer(props)
 		end
 
 		if props.tree then
-			recurseNode(props.tree, 0)
+			for _,child in pairs(props.tree.children or {}) do
+				recurseNode(child, 0)
+			end
 		end
 
 		return Roact.createElement(PluginGui, {
