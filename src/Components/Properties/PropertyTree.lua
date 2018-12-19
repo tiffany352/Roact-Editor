@@ -144,7 +144,16 @@ local function mapStateToProps(state)
 		local validateProps = type(component) == 'table' and component.validateProps
 
 		local items = {}
-		local function recurseType(key, typeNode, propsNode, depth)
+		local function recurseType(key, typeNode, defaultValue, value, depth)
+			local passValue
+			if value ~= nil then
+				passValue = value
+			elseif defaultValue ~= nil then
+				passValue = defaultValue
+			else
+				passValue = defaultsForType[typeNode.typeName]
+			end
+
 			if typeNode.type == 'object' then
 				items[#items+1] = {
 					type = 'section',
@@ -152,11 +161,17 @@ local function mapStateToProps(state)
 
 					name = key,
 				}
-				for childKey, value in pairs(typeNode.shape) do
-					recurseType(childKey, value, propsNode and propsNode[key], depth + 1)
+				for childKey, childType in pairs(typeNode.shape) do
+					recurseType(
+						childKey,
+						childType,
+						defaultValue and defaultValue[childKey],
+						value and value[childKey],
+						depth + 1
+					)
 				end
 			elseif typeNode.type == 'optional' then
-				recurseType(key, typeNode.validator, propsNode, depth)
+				recurseType(key, typeNode.validator, defaultValue, value, depth)
 			elseif typeNode.type == 'primitive' then
 				items[#items+1] = {
 					type = 'property',
@@ -164,7 +179,7 @@ local function mapStateToProps(state)
 
 					propertyName = key,
 					propertyType = typeNode.typeName,
-					value = propsNode and propsNode[key] or defaultsForType[typeNode.typeName],
+					value = passValue,
 				}
 			else
 				warn("unknown predicate type "..typeNode.type)
@@ -172,7 +187,7 @@ local function mapStateToProps(state)
 		end
 
 		if validateProps then
-			recurseType("Properties", validateProps, {Properties = node.props}, 0)
+			recurseType("Properties", validateProps, component.defaultProps, node.props, 0)
 
 			return {
 				selectedNode = node,
