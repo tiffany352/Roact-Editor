@@ -45,6 +45,10 @@ local defaultsForType = {
 	type Item = Section|Property|Button|Label
 ]]
 local function generatePropertyList(node, stylebook)
+	if not stylebook.components then
+		return false, "No stylebook loaded"
+	end
+
 	local entry = findIf(stylebook.components, function(entry) return entry.name == node.type end)
 	if not entry then
 		return false, ("Component %q does not exist in stylebook"):format(tostring(node.type))
