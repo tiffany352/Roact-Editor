@@ -102,7 +102,7 @@ local function PropertyTree(props)
 			else
 				control = TextEdit
 			end
-			children[i] = Roact.createElement(PropertyItem, {
+			children[i..tostring(control)] = Roact.createElement(PropertyItem, {
 				LayoutOrder = i,
 				depth = item.depth,
 				text = item.propertyName,
