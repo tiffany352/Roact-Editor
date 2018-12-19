@@ -181,6 +181,20 @@ local function mapStateToProps(state)
 					propertyType = typeNode.typeName,
 					value = passValue,
 				}
+			elseif typeNode.type == 'array' then
+				items[#items+1] = {
+					type = 'section',
+					depth = depth,
+					name = key,
+				}
+				for i = 1, #passValue do
+					recurseType(i, typeNode.validator, nil, passValue[i], depth + 1)
+				end
+				items[#items+1] = {
+					type = 'button',
+					depth = depth + 1,
+					label = 'Add Row',
+				}
 			else
 				warn("unknown predicate type "..typeNode.type)
 			end
