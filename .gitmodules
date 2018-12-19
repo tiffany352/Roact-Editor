@@ -17,3 +17,7 @@
 [submodule "modules/cryo"]
 	path = modules/cryo
 	url = https://github.com/Roblox/cryo.git
+[submodule "modules/RoactStudioWidgets"]
+	path = modules/RoactStudioWidgets
+	url = https://github.com/tiffany352/RoactStudioWidgets.git
+	branch = roact-ui-editor

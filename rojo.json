@@ -25,6 +25,14 @@
       "path": "modules/cryo/src",
       "target": "ReplicatedStorage.Modules.Cryo"
     },
+    "modules/RoactStudioWidgets": {
+      "path": "modules/RoactStudioWidgets/lib",
+      "target": "ReplicatedStorage.Modules.RoactStudioWidgets"
+    },
+    "modules/PropTypes": {
+      "path": "modules/RoactStudioWidgets/modules/rbx-prop-types/src",
+      "target": "ReplicatedStorage.Modules.PropTypes"
+    },
     "run-tests": {
       "path": "scripts/run-tests.server.lua",
       "target": "ServerScriptService.RunTests-RoactEditor"
