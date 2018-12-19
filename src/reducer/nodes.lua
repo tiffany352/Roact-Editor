@@ -32,7 +32,15 @@ return Rodux.createReducer(empty, {
 	deleteNode = function(state, action)
 		return {
 			nextId = state.nextId,
-			list = Cryo.List.filter(state.list, function(node) return node.id ~= action.nodeId end),
+			list = Cryo.List.filterMap(state.list, function(node)
+				if node.id == action.nodeId then
+					return nil
+				end
+				if node.parent == action.nodeId then
+					return Cryo.Dictionary.join(node, { parent = Cryo.None })
+				end
+				return node
+			end),
 		}
 	end,
 	setProp = function(state, action)
