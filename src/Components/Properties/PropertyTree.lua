@@ -7,6 +7,7 @@ local setProp = require(Modules.Plugin.Actions.setProp)
 local PropertyItem = require(script.Parent.PropertyItem)
 local Switch = require(script.Parent.Switch)
 local TextEdit = require(script.Parent.TextEdit)
+local Dropdown = require(script.Parent.Dropdown)
 
 local function SectionItem(props)
 	return Roact.createElement(PropertyItem, {
@@ -87,6 +88,8 @@ local function PropertyTree(props)
 						return false
 					end
 				end
+			elseif typeof(item.propertyType) == 'Enum' then
+				control = Dropdown
 			else
 				control = TextEdit
 			end
@@ -194,6 +197,15 @@ local function mapStateToProps(state)
 					type = 'button',
 					depth = depth + 1,
 					label = 'Add Row',
+				}
+			elseif typeNode.type == 'enumOf' then
+				items[#items+1] = {
+					type = 'property',
+					depth = depth,
+
+					propertyName = key,
+					propertyType = typeNode.enum,
+					value = passValue,
 				}
 			else
 				warn("unknown predicate type "..typeNode.type)
