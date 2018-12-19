@@ -33,7 +33,7 @@ local function checkForStylebook(selection)
 			local ok, result = pcall(require, child)
 
 			local isFunc = type(result) == 'function'
-			local isComponent = type(result) == 'table' and result.render ~= nil
+			local isComponent = type(result) == 'table' and rawget(result, 'render') ~= nil
 
 			if ok and (isFunc or isComponent) then
 				components[#components+1] = {
