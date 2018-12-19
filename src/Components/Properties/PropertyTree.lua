@@ -138,10 +138,10 @@ local function mapStateToProps(state)
 		-- special case for now
 		local selected = state.selection[1]
 		local node = selected and findIf(state.nodes.list, function(node) return node.id == selected end)
-		local type = node and node.type
-		local component = type and findIf(state.stylebook.components, function(entry) return entry.name == type end)
+		local nodeType = node and node.type
+		local component = nodeType and findIf(state.stylebook.components, function(entry) return entry.name == nodeType end)
 		component = component and component.component
-		local validateProps = component and component.validateProps
+		local validateProps = type(component) == 'table' and component.validateProps
 
 		local items = {}
 		local function recurseType(key, typeNode, propsNode, depth)
