@@ -2,34 +2,17 @@ local Modules = script.Parent.Parent.Parent.Parent
 local Roact = require(Modules.Roact)
 local RoactRodux = require(Modules.RoactRodux)
 local Cryo = require(Modules.Cryo)
+local setProp = require(Modules.Plugin.Actions.setProp)
 
 local PropertyItem = require(script.Parent.PropertyItem)
+local Switch = require(script.Parent.Switch)
+local TextEdit = require(script.Parent.TextEdit)
 
 local function SectionItem(props)
 	return Roact.createElement(PropertyItem, {
 		LayoutOrder = props.LayoutOrder,
 		text = props.sectionName,
 		depth = props.depth,
-	})
-end
-
-local function EditItem(props)
-	return Roact.createElement(PropertyItem, {
-		LayoutOrder = props.LayoutOrder,
-		text = props.propertyName,
-		depth = props.depth,
-	}, {
-		Edit = Roact.createElement("TextBox", {
-			LayoutOrder = 2,
-			Text = "Edit",
-			Size = UDim2.new(1, -150, 0, 22),
-			BackgroundColor3 = Color3.fromRGB(255, 255, 255),
-			BorderColor3 = Color3.fromRGB(238, 238, 238),
-			Font = Enum.Font.SourceSans,
-			TextColor3 = Color3.fromRGB(0, 0, 0),
-			TextSize = 18,
-			TextXAlignment = Enum.TextXAlignment.Left,
-		})
 	})
 end
 
@@ -62,11 +45,69 @@ local function PropertyTree(props)
 				depth = item.depth,
 				sectionName = item.name,
 			})
-		elseif item.type == 'textInput' then
-			children[i] = Roact.createElement(EditItem, {
+		elseif item.type == 'property' then
+			local value = item.value
+			local control
+			local validate
+			local filteredValue = value
+			if item.propertyType == 'boolean' then
+				control = Switch
+			elseif item.propertyType == 'number' then
+				control = TextEdit
+				validate = function(text)
+					local number = tonumber(text)
+					if number then
+						return true, number
+					else
+						return false
+					end
+				end
+			elseif item.propertyType == 'UDim2' then
+				control = TextEdit
+				filteredValue = string.format(
+					"%.2f, %d, %.2f, %d",
+					value.X.Scale, value.X.Offset,
+					value.Y.Scale, value.Y.Offset
+				)
+				validate = function(text)
+					local terms = {}
+					for term in text:gmatch("[^,]+") do
+						terms[#terms+1] = term:gsub("^%s*(.*)%s*$", "%1")
+					end
+					if #terms ~= 4 then
+						return false
+					end
+					local sx = tonumber(terms[1])
+					local ox = tonumber(terms[2])
+					local sy = tonumber(terms[3])
+					local oy = tonumber(terms[4])
+					if sx and ox and sy and oy then
+						return true, UDim2.new(sx, ox, sy, oy)
+					else
+						return false
+					end
+				end
+			else
+				control = TextEdit
+			end
+			children[i] = Roact.createElement(PropertyItem, {
 				LayoutOrder = i,
 				depth = item.depth,
-				propertyName = item.propertyName,
+				text = item.propertyName,
+			}, {
+				Control = Roact.createElement(control, {
+					value = filteredValue,
+					setValue = function(newValue)
+						local ok = true
+						if validate then
+							ok, newValue = validate(newValue)
+						end
+						if ok then
+							print(item.propertyName, newValue)
+							props.setProp(props.selectedNode.id, item.propertyName, newValue)
+						end
+					end,
+				}),
 			})
 		end
 	end
@@ -84,9 +125,14 @@ local function findIf(list, pred)
 	return Cryo.List.filter(list, pred)[1]
 end
 
+local defaultsForType = {
+	string = "",
+	number = 0,
+	boolean = false,
+	UDim2 = UDim2.new(),
+}
+
 local function mapStateToProps(state)
-	local items = {}
-	local foundProps = false
 
 	if #state.selection == 1 then
 		-- special case for now
@@ -97,7 +143,8 @@ local function mapStateToProps(state)
 		component = component and component.component
 		local validateProps = component and component.validateProps
 
-		local function recurseType(key, typeNode, depth)
+		local items = {}
+		local function recurseType(key, typeNode, propsNode, depth)
 			if typeNode.type == 'object' then
 				items[#items+1] = {
 					type = 'section',
@@ -106,19 +153,18 @@ local function mapStateToProps(state)
 					name = key,
 				}
 				for childKey, value in pairs(typeNode.shape) do
-					recurseType(childKey, value, depth + 1)
+					recurseType(childKey, value, propsNode and propsNode[key], depth + 1)
 				end
 			elseif typeNode.type == 'optional' then
-				recurseType(key, typeNode.validator, depth)
+				recurseType(key, typeNode.validator, propsNode, depth)
 			elseif typeNode.type == 'primitive' then
 				items[#items+1] = {
-					type = 'textInput',
+					type = 'property',
 					depth = depth,
 
 					propertyName = key,
-					value = typeNode.type,
-					setValue = function(newValue)
-					end,
+					propertyType = typeNode.typeName,
+					value = propsNode and propsNode[key] or defaultsForType[typeNode.typeName],
 				}
 			else
 				warn("unknown predicate type "..typeNode.type)
@@ -126,16 +172,26 @@ local function mapStateToProps(state)
 		end
 
 		if validateProps then
-			recurseType("Properties", validateProps, 0)
-			foundProps = true
+			recurseType("Properties", validateProps, {Properties = node.props}, 0)
+
+			return {
+				selectedNode = node,
+				items = items,
+			}
 		end
 	end
 
+	return {}
+end
+
+local function mapDispatchToProps(dispatch)
 	return {
-		items = foundProps and items,
+		setProp = function(nodeId, propName, propValue)
+			dispatch(setProp(nodeId, propName, propValue))
+		end
 	}
 end
 
-PropertyTree = RoactRodux.connect(mapStateToProps)(PropertyTree)
+PropertyTree = RoactRodux.connect(mapStateToProps, mapDispatchToProps)(PropertyTree)
 
 return PropertyTree
