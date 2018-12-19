@@ -3,6 +3,7 @@ local Roact = require(Modules.Roact)
 local RoactRodux = require(Modules.RoactRodux)
 local Cryo = require(Modules.Cryo)
 local setProp = require(Modules.Plugin.Actions.setProp)
+local generatePropertyList = require(Modules.Plugin.Utilities.generatePropertyList)
 
 local PropertyItem = require(script.Parent.PropertyItem)
 local Switch = require(script.Parent.Switch)
@@ -18,11 +19,19 @@ local function SectionItem(props)
 end
 
 local function PropertyTree(props)
-	if not props.items then
+	if props.noItemsReason then
 		return Roact.createElement("TextLabel", {
 			Size = UDim2.new(1, 0, 1, 0),
-			Text = "Couldn't discover properties",
+			BackgroundTransparency = 1.0,
+			TextWrapped = true,
+
+			TextColor3 = Color3.fromRGB(0, 0, 0),
+			Font = Enum.Font.SourceSans,
+			TextSize = 22,
+			Text = props.noItemsReason,
 		})
+	elseif not props.items then
+		return nil
 	end
 
 	local binding, setter = Roact.createBinding(0)
@@ -128,98 +137,17 @@ local function findIf(list, pred)
 	return Cryo.List.filter(list, pred)[1]
 end
 
-local defaultsForType = {
-	string = "",
-	number = 0,
-	boolean = false,
-	UDim2 = UDim2.new(),
-}
-
 local function mapStateToProps(state)
-
 	if #state.selection == 1 then
 		-- special case for now
 		local selected = state.selection[1]
 		local node = selected and findIf(state.nodes.list, function(node) return node.id == selected end)
-		local nodeType = node and node.type
-		local component = nodeType and findIf(state.stylebook.components, function(entry) return entry.name == nodeType end)
-		component = component and component.component
-		local validateProps = type(component) == 'table' and component.validateProps
-
-		local items = {}
-		local function recurseType(key, typeNode, defaultValue, value, depth)
-			local passValue
-			if value ~= nil then
-				passValue = value
-			elseif defaultValue ~= nil then
-				passValue = defaultValue
-			else
-				passValue = defaultsForType[typeNode.typeName]
-			end
-
-			if typeNode.type == 'object' then
-				items[#items+1] = {
-					type = 'section',
-					depth = depth,
-
-					name = key,
-				}
-				for childKey, childType in pairs(typeNode.shape) do
-					recurseType(
-						childKey,
-						childType,
-						defaultValue and defaultValue[childKey],
-						value and value[childKey],
-						depth + 1
-					)
-				end
-			elseif typeNode.type == 'optional' then
-				recurseType(key, typeNode.validator, defaultValue, value, depth)
-			elseif typeNode.type == 'primitive' then
-				items[#items+1] = {
-					type = 'property',
-					depth = depth,
-
-					propertyName = key,
-					propertyType = typeNode.typeName,
-					value = passValue,
-				}
-			elseif typeNode.type == 'array' then
-				items[#items+1] = {
-					type = 'section',
-					depth = depth,
-					name = key,
-				}
-				for i = 1, #passValue do
-					recurseType(i, typeNode.validator, nil, passValue[i], depth + 1)
-				end
-				items[#items+1] = {
-					type = 'button',
-					depth = depth + 1,
-					label = 'Add Row',
-				}
-			elseif typeNode.type == 'enumOf' then
-				items[#items+1] = {
-					type = 'property',
-					depth = depth,
-
-					propertyName = key,
-					propertyType = typeNode.enum,
-					value = passValue,
-				}
-			else
-				warn("unknown predicate type "..typeNode.type)
-			end
-		end
-
-		if validateProps then
-			recurseType("Properties", validateProps, component.defaultProps, node.props, 0)
-
-			return {
-				selectedNode = node,
-				items = items,
-			}
-		end
+		local items, reason = generatePropertyList(node, state.stylebook)
+		return {
+			selectedNode = selected,
+			items = items,
+			noItemsReason = reason,
+		}
 	end
 
 	return {}
