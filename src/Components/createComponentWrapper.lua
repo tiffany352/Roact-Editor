@@ -23,7 +23,11 @@ local function createComponentWrapper(HostRoact, ChildRoact)
 			local element = HostRoact.oneChild(self.props[HostRoact.Children])
 
 			if self.handle then
-				self.handle = ChildRoact.reconcile(self.handle, element)
+				if ChildRoact.update then
+					self.handle = ChildRoact.update(self.handle, element)
+				else
+					self.handle = ChildRoact.reconcile(self.handle, element)
+				end
 			else
 				self.handle = ChildRoact.mount(element, self.ref.current, "InnerComponent")
 			end
