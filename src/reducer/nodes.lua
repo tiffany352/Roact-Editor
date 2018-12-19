@@ -30,14 +30,19 @@ return Rodux.createReducer(empty, {
 		}
 	end,
 	deleteNode = function(state, action)
+		-- Trim out orphaned nodes.
+		local isDescendant = {}
+		for _,node in pairs(state.list) do
+			if node.parent == action.nodeId or isDescendant[node.parent] then
+				isDescendant[node.id] = true
+			end
+		end
+
 		return {
 			nextId = state.nextId,
 			list = Cryo.List.filterMap(state.list, function(node)
-				if node.id == action.nodeId then
+				if node.id == action.nodeId or isDescendant[node.id] then
 					return nil
-				end
-				if node.parent == action.nodeId then
-					return Cryo.Dictionary.join(node, { parent = Cryo.None })
 				end
 				return node
 			end),

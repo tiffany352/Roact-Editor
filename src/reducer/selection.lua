@@ -17,4 +17,7 @@ return Rodux.createReducer({}, {
 			return Cryo.List.join(state, { action.node })
 		end
 	end,
+	deleteNode = function(state, action)
+		return Cryo.List.removeValue(state, action.nodeId)
+	end,
 })
