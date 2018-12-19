@@ -54,8 +54,10 @@ function Document:render()
 					self.startPos = Vector2.new(x, y)
 				end,
 				[Roact.Event.MouseButton1Up] = function(rbx, x, y)
-					self.panning = false
-					self:mousePanBy(rbx, x, y)
+					if self.panning then
+						self.panning = false
+						self:mousePanBy(rbx, x, y)
+					end
 				end,
 				[Roact.Event.MouseMoved] = function(rbx, x, y)
 					if self.panning then
