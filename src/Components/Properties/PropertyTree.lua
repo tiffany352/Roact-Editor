@@ -72,6 +72,44 @@ local function PropertyTree(props)
 						return false
 					end
 				end
+			elseif item.propertyType == 'Vector2' then
+				control = TextEdit
+				filteredValue = string.format("%.2f, %.2f", value.X, value.Y)
+				validate = function(text)
+					local terms = {}
+					for term in text:gmatch("[^,]+") do
+						terms[#terms+1] = term:gsub("^%s*(.*)%s*$", "%1")
+					end
+					if #terms ~= 2 then
+						return false
+					end
+					local x = tonumber(terms[1])
+					local y = tonumber(terms[2])
+					if x and y then
+						return true, Vector2.new(x, y)
+					else
+						return false
+					end
+				end
+			elseif item.propertyType == 'UDim' then
+				control = TextEdit
+				filteredValue = string.format("%.2f, %d", value.Scale, value.Offset)
+				validate = function(text)
+					local terms = {}
+					for term in text:gmatch("[^,]+") do
+						terms[#terms+1] = term:gsub("^%s*(.*)%s*$", "%1")
+					end
+					if #terms ~= 2 then
+						return false
+					end
+					local scale = tonumber(terms[1])
+					local offset = tonumber(terms[2])
+					if scale and offset then
+						return true, UDim.new(scale, offset)
+					else
+						return false
+					end
+				end
 			elseif item.propertyType == 'UDim2' then
 				control = TextEdit
 				filteredValue = string.format(

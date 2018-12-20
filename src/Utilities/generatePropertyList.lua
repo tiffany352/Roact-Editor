@@ -10,6 +10,8 @@ local defaultsForType = {
 	number = 0,
 	boolean = false,
 	UDim2 = UDim2.new(),
+	UDim = UDim.new(),
+	Vector2 = Vector2.new(),
 }
 
 --[[
