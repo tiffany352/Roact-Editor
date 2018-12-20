@@ -116,7 +116,7 @@ local function PropertyTree(props)
 						end
 						if ok then
 							print(item.propertyName, newValue)
-							props.setProp(props.selectedNode.id, item.propertyName, newValue)
+							props.setProp(props.selectedNode, item.propertyName, newValue)
 						end
 					end,
 				}),
