@@ -6,4 +6,5 @@ return Rodux.combineReducers({
 	editorEnabled = require(script.editorEnabled),
 	selection = require(script.selection),
 	nodes = require(script.nodes),
+	dialogState = require(script.dialogState),
 })

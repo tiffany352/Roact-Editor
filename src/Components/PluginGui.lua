@@ -34,6 +34,18 @@ function PluginGuiView:init()
 		local pluginGui = props.plugin:createDockWidgetPluginGui(props.Name, info)
 		pluginGui.Name = props.Name
 		pluginGui.Title = props.Title
+		if props.alwaysOpen then
+			pluginGui.Enabled = true
+		end
+
+		pluginGui:BindToClose(function()
+			if props.onClosed then
+				props.onClosed()
+			else
+				pluginGui.Enabled = false
+			end
+		end)
+
 		self.pluginGui = pluginGui
 
 		self.toggleEnabled = function(value)
@@ -44,6 +56,12 @@ function PluginGuiView:init()
 			end
 		end
 	end)()
+end
+
+function PluginGuiView:willUnmount()
+	if self.props.alwaysOpen then
+		self.pluginGui.Enabled = false
+	end
 end
 
 function PluginGuiView:render()
@@ -72,6 +90,8 @@ local function PluginGui(props)
 			OverrideRestore = props.OverrideRestore,
 			FloatingSize = props.FloatingSize,
 			MinSize = props.MinSize,
+			onClosed = props.onClosed,
+			alwaysOpen = props.alwaysOpen,
 		}, props[Roact.Children])
 	end)
 end

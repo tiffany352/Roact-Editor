@@ -7,6 +7,9 @@ return Rodux.createReducer({}, {
 		-- clear
 		return {}
 	end,
+	loadDocument = function(state, action)
+		return {}
+	end,
 	setSelection = function(state, action)
 		return action.selection
 	end,

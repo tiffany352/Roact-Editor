@@ -102,6 +102,14 @@ function PluginFacade:createPluginMenu(id, title, icon)
 	return plugin:CreatePluginMenu(id, title, icon)
 end
 
+function PluginFacade:getSetting(name)
+	return plugin:GetSetting(name)
+end
+
+function PluginFacade:setSetting(name, value)
+	plugin:SetSetting(name, value)
+end
+
 --[[
 	Sets the method to call the next time the system tries to reload
 ]]

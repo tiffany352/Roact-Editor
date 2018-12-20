@@ -64,6 +64,7 @@ local function Explorer(props)
 			MinSize = Vector2.new(200, 0),
 		}, {
 			render = function(toggleEnabled)
+				toggleEnabled(true)
 				return Roact.createElement("ImageButton", {
 					Size = UDim2.new(1, 0, 1, 0),
 					BackgroundTransparency = 1.0,

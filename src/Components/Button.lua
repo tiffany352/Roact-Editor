@@ -9,8 +9,10 @@ local function Button(props)
 	return Roact.createElement("ImageButton", {
 		LayoutOrder = props.LayoutOrder,
 		Size = size,
+		Position = props.position,
 		BackgroundColor3 = Color3.fromRGB(212, 212, 212),
 		BorderSizePixel = 0,
+		AutoButtonColor = not props.disabled,
 
 		[Roact.Event.Activated] = function()
 			if not props.disabled then
@@ -23,6 +25,7 @@ local function Button(props)
 			Text = text,
 			Size = UDim2.new(1, 0, 1, 0),
 			BackgroundTransparency = 1.0,
+			TextColor3 = props.disabled and Color3.fromRGB(128, 128, 128) or Color3.fromRGB(0, 0, 0),
 			TextSize = 20,
 		})
 	})

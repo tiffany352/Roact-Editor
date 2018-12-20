@@ -2,6 +2,7 @@ local Modules = script.Parent.Parent.Parent
 local Roact = require(Modules.Roact)
 local RoactRodux = require(Modules.RoactRodux)
 local addNode = require(Modules.Plugin.Actions.addNode)
+local promptDialog = require(Modules.Plugin.Actions.promptDialog)
 
 local PluginGui = require(script.Parent.PluginGui)
 local Button = require(script.Parent.Button)
@@ -18,6 +19,27 @@ local function Toolbar(props)
 		Layout = Roact.createElement("UIListLayout", {
 			SortOrder = Enum.SortOrder.LayoutOrder,
 			Padding = UDim.new(0, 4),
+		}),
+		LoadSave = Roact.createElement("Frame", {
+			LayoutOrder = 0,
+			Size = UDim2.new(1, 0, 0, 22),
+			BackgroundTransparency = 1.0,
+		}, {
+			Load = Roact.createElement(Button, {
+				size = UDim2.new(0.5, -2, 1, 0),
+				text = "Load Doc",
+				onClick = function()
+					props.promptDialog('Load')
+				end
+			}),
+			Save = Roact.createElement(Button, {
+				size = UDim2.new(0.5, -2, 1, 0),
+				position = UDim2.new(0.5, 2, 0, 0),
+				text = "Save Doc",
+				onClick = function()
+					props.promptDialog('Save')
+				end,
+			})
 		}),
 		CurrentStylebook = Roact.createElement("TextLabel", {
 			BackgroundTransparency = 1.0,
@@ -81,7 +103,10 @@ local function mapDispatchToProps(dispatch)
 	return {
 		addNode = function(type, props, parent)
 			dispatch(addNode(type, props, parent))
-		end
+		end,
+		promptDialog = function(name)
+			dispatch(promptDialog(name))
+		end,
 	}
 end
 

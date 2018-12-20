@@ -17,6 +17,9 @@ return Rodux.createReducer(empty, {
 	loadStylebook = function(state, action)
 		return empty
 	end,
+	loadDocument = function(state, action)
+		return action.nodes
+	end,
 	addNode = function(state, action)
 		local node = {
 			id = state.nextId,
