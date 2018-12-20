@@ -22,16 +22,18 @@ function DocumentTree:render()
 	local Wrapper = self.state.componentWrapper
 
 	if not ChildRoact then
-		return Roact.createElement("TextLabel", {
-			Size = UDim2.new(0, 300, 0, 150),
-			Position = UDim2.new(0.5, 0, 0.5, 0),
-			AnchorPoint = Vector2.new(0.5, 0.5),
-			Font = Enum.Font.SourceSansBold,
-			TextSize = 20,
-			TextColor3 = Color3.fromRGB(255, 255, 255),
-			BackgroundColor3 = Color3.fromRGB(96, 96, 96),
-			BorderColor3 = Color3.fromRGB(48, 48, 48),
-			Text = "No stylebook loaded",
+		return Roact.createElement("Folder", {}, {
+			Message = Roact.createElement("TextLabel", {
+				Size = UDim2.new(0, 300, 0, 150),
+				Position = UDim2.new(0.5, 0, 0.5, 0),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Font = Enum.Font.SourceSansBold,
+				TextSize = 20,
+				TextColor3 = Color3.fromRGB(255, 255, 255),
+				BackgroundColor3 = Color3.fromRGB(96, 96, 96),
+				BorderColor3 = Color3.fromRGB(48, 48, 48),
+				Text = "No stylebook loaded",
+			})
 		})
 	end
 
