@@ -34,6 +34,7 @@ function PluginGuiView:init()
 		local pluginGui = props.plugin:createDockWidgetPluginGui(props.Name, info)
 		pluginGui.Name = props.Name
 		pluginGui.Title = props.Title
+		pluginGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 		if props.alwaysOpen then
 			pluginGui.Enabled = true
 		end
