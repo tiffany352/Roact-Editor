@@ -1,7 +1,9 @@
 local Modules = script.Parent.Parent.Parent
 local Roact = require(Modules.Roact)
 local RoactRodux = require(Modules.RoactRodux)
+local Cryo = require(Modules.Cryo)
 local closePrompt = require(Modules.Plugin.Actions.closePrompt)
+local Serializer = require(Modules.Plugin.Utilities.Serializer)
 
 local Dialog = require(script.Parent.Dialog)
 local Button = require(script.Parent.Button)
@@ -145,9 +147,25 @@ local function InjectPluginFuncs(props)
 			end,
 
 			onConfirm = function(name)
-				plugin:setSetting("SavedDocuments_"..name, {
-					nodes = props.nodes,
-				})
+				local document = {
+					version = 2,
+					nodes = Cryo.Dictionary.join(props.nodes, {
+						list = Cryo.List.map(props.nodes.list, function(node)
+							return Cryo.Dictionary.join(node, {
+								props = Serializer.encode(node.props),
+							})
+						end)
+					}),
+				}
+
+				assert(document.version == 2)
+				assert(type(document.nodes) == 'table')
+				assert(type(document.nodes.nextId) == 'number')
+				assert(type(document.nodes.list) == 'table')
+				assert(#document.nodes.list >= 1)
+				assert(document.nodes.list[1].props.type == 'table')
+
+				plugin:setSetting("SavedDocuments_"..name, document)
 				local items = plugin:getSetting("SavedDocuments") or {}
 				items[#items+1] = {
 					name = name,

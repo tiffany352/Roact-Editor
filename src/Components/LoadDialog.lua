@@ -1,8 +1,10 @@
 local Modules = script.Parent.Parent.Parent
 local Roact = require(Modules.Roact)
 local RoactRodux = require(Modules.RoactRodux)
+local Cryo = require(Modules.Cryo)
 local closePrompt = require(Modules.Plugin.Actions.closePrompt)
 local loadDocument = require(Modules.Plugin.Actions.loadDocument)
+local Serializer = require(Modules.Plugin.Utilities.Serializer)
 
 local Dialog = require(script.Parent.Dialog)
 local Button = require(script.Parent.Button)
@@ -229,7 +231,18 @@ local function InjectItemsFromSettings(props)
 				if not save then
 					error("Missing save for "..item.name)
 				end
-				props.onConfirm(save.nodes)
+				if save.version == 2 then
+					local nodes = Cryo.Dictionary.join(save.nodes, {
+						list = Cryo.List.map(save.nodes.list, function(node)
+							return Cryo.Dictionary.join(node, {
+								props = Serializer.decode(node.props),
+							})
+						end)
+					})
+					props.onConfirm(nodes)
+				else -- version 1
+					props.onConfirm(save.nodes)
+				end
 			end,
 		})
 	end)
