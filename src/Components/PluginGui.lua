@@ -72,7 +72,7 @@ function PluginGuiView:render()
 		return Roact.createElement(Roact.Portal, {
 			target = self.pluginGui,
 		}, {
-			[self.props.Name] = render(self.toggleEnabled)
+			[self.props.Name] = render(self.toggleEnabled, self.pluginGui)
 		})
 	else
 		return nil

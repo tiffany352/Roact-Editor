@@ -15,7 +15,8 @@ local function ExplorerNode(props)
 		BorderSizePixel = 0,
 
 		[Roact.Event.Activated] = props.onClick,
-
+		[Roact.Event.MouseButton1Down] = props.mouseDown,
+		[Roact.Event.MouseButton1Up] = props.mouseUp,
 		[Roact.Event.MouseButton2Click] = props.showMenu,
 	}, {
 		Padding = Roact.createElement("UIPadding", {
